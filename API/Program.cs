@@ -33,7 +33,7 @@ builder.Services.AddScoped<IFormularioRepository, FormularioRepository>();
 
 builder.Services.AddCors(options =>
     options.AddPolicy("AllowVercel", policy =>
-        policy.WithOrigins("https://tu-app.vercel.app")
+        policy.WithOrigins("https://mi-formulario-chi.vercel.app/")
               .AllowAnyHeader()
               .AllowAnyMethod()));
 
