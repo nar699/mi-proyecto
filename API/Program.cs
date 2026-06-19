@@ -1,18 +1,20 @@
 using mi_proyecto.Application.Interfaces;
 using mi_proyecto.Application.Services;
-using mi_proyecto.Infrastructure;
 using mi_proyecto.Infrastructure.Interfaces;
+using mi_proyecto.Infrastructure.Persistence;
 using mi_proyecto.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// Base de datos
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+    ?? builder.Configuration.GetConnectionString("Default");
 
-// Dependencias (D de SOLID — siempre interfaz → implementación)
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(connectionString));
+
 builder.Services.AddScoped<IFormularioService, FormularioService>();
 builder.Services.AddScoped<IFormularioRepository, FormularioRepository>();
 
@@ -23,6 +25,13 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod()));
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
 app.UseCors("AllowVercel");
 app.MapControllers();
 app.Run();

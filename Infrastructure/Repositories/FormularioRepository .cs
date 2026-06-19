@@ -1,5 +1,6 @@
 ﻿using mi_proyecto.Domain.Entities;
 using mi_proyecto.Infrastructure.Interfaces;
+using mi_proyecto.Infrastructure.Persistence;
 
 namespace mi_proyecto.Infrastructure.Repositories
 {

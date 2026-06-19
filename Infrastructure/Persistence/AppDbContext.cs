@@ -1,7 +1,7 @@
 ﻿using mi_proyecto.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace mi_proyecto.Infrastructure
+namespace mi_proyecto.Infrastructure.Persistence
 {
     public class AppDbContext : DbContext
     {
