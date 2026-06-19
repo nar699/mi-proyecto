@@ -3,7 +3,7 @@
     public record FormularioDto(
     string Nombre,
     string Email,
-    string Mensaje
+    string? Mensaje
 );
 
     public record FormularioResponseDto(
