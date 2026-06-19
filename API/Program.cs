@@ -9,8 +9,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+// Convierte la URL de Railway al formato que entiende Npgsql
+var rawUrl = Environment.GetEnvironmentVariable("DATABASE_URL")
     ?? builder.Configuration.GetConnectionString("Default");
+
+string connectionString;
+if (rawUrl != null && rawUrl.StartsWith("postgresql://"))
+{
+    var uri = new Uri(rawUrl);
+    var userInfo = uri.UserInfo.Split(':');
+    connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Require;Trust Server Certificate=true";
+}
+else
+{
+    connectionString = rawUrl!;
+}
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
